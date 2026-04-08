@@ -121,6 +121,15 @@ def run_inference_examples(model, tflite_path, x_test):
 
 
 def main():
+    # GPU/Performance optimization
+    gpus = tf.config.list_physical_devices('GPU')
+    if gpus:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+        logger.info(f"GPU detected: {len(gpus)} GPU(s) will be used")
+    else:
+        logger.info("No GPU detected, using CPU (training will be slower)")
+
     ensure_directories()
     logger.info("Starting EdgeVisionNet pipeline.")
 

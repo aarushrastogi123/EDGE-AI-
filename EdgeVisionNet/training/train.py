@@ -1,11 +1,11 @@
 import os
 import tensorflow as tf
-from tensorflow.keras import layers
-from tensorflow.data import AUTOTUNE
 
 from utils.config import get_config
 from training.augment import get_augmentation_layer
 from training.callbacks import get_training_callbacks
+
+AUTOTUNE = tf.data.AUTOTUNE
 
 
 config = get_config()
@@ -30,6 +30,7 @@ def load_and_prepare_dataset():
     train_data = dataset.skip(val_count)
     val_data = dataset.take(val_count)
 
+    # Pre-compute and cache preprocessing to avoid recomputation
     train_ds = (
         train_data.map(preprocess_image, num_parallel_calls=AUTOTUNE)
         .cache()
@@ -52,6 +53,8 @@ def load_and_prepare_dataset():
         .prefetch(AUTOTUNE)
     )
 
+    print(f"✓ Data loaded: {len(x_train)} train samples, {val_count} val samples, {len(x_test)} test samples")
+    print(f"✓ Batch size: {config.BATCH_SIZE}, Image size: {config.IMAGE_SIZE}x{config.IMAGE_SIZE}")
     return train_ds, val_ds, test_ds, (x_test, y_test)
 
 
@@ -73,6 +76,10 @@ def train_model(model, train_ds, val_ds, model_name: str):
         results_dir=config.MODEL_DIR,
         monitor=config.CHECKPOINT_MONITOR,
     )
+
+    print(f"\n{'='*60}")
+    print(f"Training {model_name} for {config.EPOCHS} epochs")
+    print(f"{'='*60}\n")
 
     history = model.fit(
         create_augmented_dataset(train_ds),

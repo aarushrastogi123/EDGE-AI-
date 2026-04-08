@@ -1,5 +1,5 @@
 import os
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+import tensorflow as tf
 
 
 def get_training_callbacks(model_name: str, results_dir: str, monitor: str = "val_loss"):
@@ -7,18 +7,18 @@ def get_training_callbacks(model_name: str, results_dir: str, monitor: str = "va
     os.makedirs(results_dir, exist_ok=True)
 
     callbacks = [
-        EarlyStopping(
+        tf.keras.callbacks.EarlyStopping(
             monitor=monitor,
             patience=3,
             restore_best_weights=True,
-            verbose=1,
+            verbose=0,
         ),
-        ModelCheckpoint(
+        tf.keras.callbacks.ModelCheckpoint(
             filepath=checkpoint_filepath,
             monitor=monitor,
             save_best_only=True,
             save_weights_only=False,
-            verbose=1,
+            verbose=0,
         ),
     ]
     return callbacks, checkpoint_filepath

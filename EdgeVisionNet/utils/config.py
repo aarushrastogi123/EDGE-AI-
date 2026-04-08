@@ -6,10 +6,10 @@ class Config:
     BASE_DIR = os.path.dirname(PROJECT_ROOT)
 
     DATASET_NAME = "CIFAR-10"
-    IMAGE_SIZE = 224
+    IMAGE_SIZE = 96
     NUM_CLASSES = 10
-    BATCH_SIZE = 64
-    EPOCHS = 10
+    BATCH_SIZE = 128
+    EPOCHS = 5
     LEARNING_RATE = 1e-3
     VALIDATION_SPLIT = 0.1
     SHUFFLE_BUFFER = 1024
